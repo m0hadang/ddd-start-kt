@@ -11,7 +11,12 @@ enum class OrderState {
     CANCELED,
 }
 
-class ShippingInfo(
+data class ShippingInfo(
+    private var receiverName: String,
+    private var receiverPhoneNumber: String,
+    private var shippingAddress1: String,
+    private var shippingAddress2: String,
+    private var shippingZipcode: String,
 )
 
 class Product()
