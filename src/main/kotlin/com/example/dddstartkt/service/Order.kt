@@ -11,12 +11,15 @@ enum class OrderState {
     CANCELED,
 }
 
-data class ShippingInfo(
-    private var receiverName: String,
-    private var receiverPhoneNumber: String,
-    private var shippingAddress1: String,
-    private var shippingAddress2: String,
-    private var shippingZipcode: String,
+data class Receiver(
+    private var name: String,
+    private var phoneNumber: String
+)
+
+data class Address(
+    private var address1: String,
+    private var address2: String,
+    private var zipcode: String,
 )
 
 class Product()
@@ -43,13 +46,15 @@ class OrderLine(
 class Order(
     private var orderNumber: String,
     private var orderState: OrderState,
-    private var shippingInfo: ShippingInfo, // Rule : 배송지 정보는 반드시 지정해야 한다.
+    private var receiver: Receiver, // Rule : 받는 사람 정보는 반드시 지정해야 한다.
+    private var address: Address, // Rule : 배송지 주소 정보는 반드시 지정해야 한다.
     private var orderLines: List<OrderLine>, // 주문 집합.
     private var totalAmounts: Int,
 ) {
     init {
         setOrderLines(orderLines)
     }
+
     private fun setOrderLines(orderLines: List<OrderLine>) {
         verifyAtLeastOneOrMoreOrderLines(orderLines)
         this.orderLines = orderLines
@@ -62,10 +67,11 @@ class Order(
     }
 
     // 배송지 정보 변경
-    fun changeShippingInfo(newChangeShippingInfo: ShippingInfo) {
+    fun changeShippingInfo(newReceiver: Receiver, newAddress: Address) {
         // Rule : 배송지 변경은 출고 전에만 가능.
         verifyNotYetShipped()
-        this.shippingInfo = newChangeShippingInfo
+        this.receiver = newReceiver
+        this.address = newAddress
     }
 
     // 주문 취소
@@ -99,10 +105,12 @@ class Order(
     override fun equals(other: Any?): Boolean {
         return (other is Order) && this.orderNumber == other.orderNumber
     }
+
     override fun hashCode(): Int {
         var result = orderNumber.hashCode()
         result = 31 * result + orderState.hashCode()
-        result = 31 * result + shippingInfo.hashCode()
+        result = 31 * result + receiver.hashCode()
+        result = 31 * result + address.hashCode()
         result = 31 * result + orderLines.hashCode()
         result = 31 * result + totalAmounts
         return result
