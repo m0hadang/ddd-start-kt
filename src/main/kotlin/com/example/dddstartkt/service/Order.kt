@@ -1,5 +1,7 @@
 package com.example.dddstartkt.service
 
+import org.springframework.core.StandardReflectionParameterNameDiscoverer
+
 enum class OrderState {
     PAYMENT_WAITING,
     PREPARING,
@@ -34,6 +36,7 @@ class OrderLine(
 }
 
 class Order(
+    private var orderNumber: String,
     private var orderState: OrderState,
     private var shippingInfo: ShippingInfo, // Rule : 배송지 정보는 반드시 지정해야 한다.
     private var orderLines: List<OrderLine>, // 주문 집합.
@@ -42,7 +45,6 @@ class Order(
     init {
         setOrderLines(orderLines)
     }
-
     private fun setOrderLines(orderLines: List<OrderLine>) {
         verifyAtLeastOneOrMoreOrderLines(orderLines)
         this.orderLines = orderLines
@@ -87,5 +89,17 @@ class Order(
     private fun calculateTotalAmounts() {
         this.totalAmounts =
             this.orderLines.sumOf { it.amount }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return (other is Order) && this.orderNumber == other.orderNumber
+    }
+    override fun hashCode(): Int {
+        var result = orderNumber.hashCode()
+        result = 31 * result + orderState.hashCode()
+        result = 31 * result + shippingInfo.hashCode()
+        result = 31 * result + orderLines.hashCode()
+        result = 31 * result + totalAmounts
+        return result
     }
 }
