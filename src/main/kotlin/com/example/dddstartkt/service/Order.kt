@@ -23,12 +23,22 @@ data class Address(
 )
 
 class Product()
+class Money(
+    var value: Int,
+) {
+    fun add(amount: Money): Money {
+        return Money(this.value + amount.value)
+    }
+    fun multiply(multiplier: Int): Money {
+        return Money(this.value * multiplier)
+    }
+}
 class OrderLine(
     private var product: Product,
-    private var price: Int,
+    private var price: Money,
     private var quantity: Int,
 ) {
-    var amount: Int;
+    var amount: Money;
 
     init {
         this.amount = calculateAmounts()
@@ -38,11 +48,10 @@ class OrderLine(
         return this.product != product
     }
 
-    private fun calculateAmounts(): Int {
-        return this.price * this.quantity
+    private fun calculateAmounts(): Money {
+        return this.price.multiply(this.quantity)
     }
 }
-
 class Order(
     private var orderNumber: String,
     private var orderState: OrderState,
@@ -99,7 +108,7 @@ class Order(
     // Rule : 총 주문 금액은 각 상품의 구매 가격 합을 모두 더한 금액이다.
     private fun calculateTotalAmounts() {
         this.totalAmounts =
-            this.orderLines.sumOf { it.amount }
+            this.orderLines.sumOf { it.amount.value }
     }
 
     override fun equals(other: Any?): Boolean {
