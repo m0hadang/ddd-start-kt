@@ -11,6 +11,24 @@ enum class OrderState {
 class ShippingInfo(
 )
 
+class Product()
+class OrderLine(
+    private var product: Product,
+    private var price: Int,
+    private var quantity: Int,
+) {
+    private var amount: Int;
+    init {
+        this.amount = calculateAmounts()
+    }
+    fun isDifferentProduct(product: Product): Boolean {
+        return this.product != product
+    }
+    private fun calculateAmounts(): Int {
+        return this.price * this.quantity
+    }
+}
+
 class Order(
     private var orderState: OrderState,
     private var shippingInfo: ShippingInfo,
