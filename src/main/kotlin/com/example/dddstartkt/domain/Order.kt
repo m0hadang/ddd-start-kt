@@ -1,6 +1,4 @@
-package com.example.dddstartkt.service
-
-import org.springframework.core.StandardReflectionParameterNameDiscoverer
+package com.example.dddstartkt.domain
 
 enum class OrderState {
     PAYMENT_WAITING,
