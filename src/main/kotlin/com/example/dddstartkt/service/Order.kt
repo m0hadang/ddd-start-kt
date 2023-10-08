@@ -31,10 +31,18 @@ class OrderLine(
 
 class Order(
     private var orderState: OrderState,
-    private var shippingInfo: ShippingInfo,
-    private var orderLines: List<OrderLine>, // 주문 집합
+    private var shippingInfo: ShippingInfo, // 배송지 정보는 반드시 지정해야 한다.
+    private var orderLines: List<OrderLine>, // 주문 집합.
     private var totalAmounts: Int,
 ) {
+    init {
+        setOrderLines(orderLines)
+    }
+    private fun setOrderLines(orderLines: List<OrderLine>) {
+        verifyAtLeastOneOrMoreOrderLines(orderLines)
+        this.orderLines = orderLines
+        calculateTotalAmounts()
+    }
     // 출고 상태로 변경
     fun changeShipped() {
         this.orderState = OrderState.SHIPPED
@@ -53,11 +61,6 @@ class Order(
     private fun isShippingChangeable(): Boolean {
         return this.orderState == OrderState.PAYMENT_WAITING ||
                 this.orderState == OrderState.PAYMENT_WAITING
-    }
-    private fun setOrderLines(orderLines: List<OrderLine>) {
-        verifyAtLeastOneOrMoreOrderLines(orderLines)
-        this.orderLines = orderLines
-        calculateTotalAmounts()
     }
     // Rule : 최소 한 종류 이상의 상품을 주문해야 한다.
     private fun verifyAtLeastOneOrMoreOrderLines(orderLines: List<OrderLine>) {
