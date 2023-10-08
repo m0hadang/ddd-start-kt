@@ -1,2 +1,6 @@
 server:
   port: 8080
+#logging:
+#  level:
+#    org.springframework: debug
+#    org.springframework.web: debug
