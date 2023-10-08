@@ -73,7 +73,7 @@ class Order(
         if (this.orderState != OrderState.PAYMENT_WAITING &&
             this.orderState != OrderState.PREPARING
         )
-            throw IllegalStateException("aleady shipped")
+            throw IllegalStateException("already shipped")
     }
 
     // Rule : 최소 한 종류 이상의 상품을 주문해야 한다.
