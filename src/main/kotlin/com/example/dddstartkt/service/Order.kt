@@ -17,7 +17,7 @@ class OrderLine(
     private var price: Int,
     private var quantity: Int,
 ) {
-    private var amount: Int;
+    var amount: Int;
     init {
         this.amount = calculateAmounts()
     }
@@ -32,6 +32,8 @@ class OrderLine(
 class Order(
     private var orderState: OrderState,
     private var shippingInfo: ShippingInfo,
+    private var orderLines: List<OrderLine>, // 주문 집합
+    private var totalAmounts: Int,
 ) {
     // 출고 상태로 변경
     fun changeShipped() {
@@ -51,5 +53,21 @@ class Order(
     private fun isShippingChangeable(): Boolean {
         return this.orderState == OrderState.PAYMENT_WAITING ||
                 this.orderState == OrderState.PAYMENT_WAITING
+    }
+    private fun setOrderLines(orderLines: List<OrderLine>) {
+        verifyAtLeastOneOrMoreOrderLines(orderLines)
+        this.orderLines = orderLines
+        calculateTotalAmounts()
+    }
+    // Rule : 최소 한 종류 이상의 상품을 주문해야 한다.
+    private fun verifyAtLeastOneOrMoreOrderLines(orderLines: List<OrderLine>) {
+        if (this.orderLines.isEmpty()) {
+            throw IllegalArgumentException("최소 한 종류 이상의 상품이 있어야 합니다.")
+        }
+    }
+    // Rule : 총 주문 금액은 각 상품의 구매 가격 합을 모두 더한 금액이다.
+    private fun calculateTotalAmounts() {
+        this.totalAmounts =
+            this.orderLines.sumOf { it.amount }
     }
 }
